@@ -1,0 +1,7 @@
+services:
+  port-forwarding-api:
+    build: .
+    network_mode: host  
+    environment:
+      API_SECRET: "secureit"
+    privileged: true    
