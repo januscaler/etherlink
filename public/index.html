@@ -32,6 +32,10 @@
     <div class="container">
         <h1>Port Forwarding Manager</h1>
 
+        <h2>Enter API Secret</h2>
+        <input type="text" id="apiSecret" placeholder="Enter API Secret" />
+        <button onclick="setApiSecret()">Set API Secret</button>
+
         <h2>Add Port Forwarding Rule</h2>
         <input type="text" id="externalPort" placeholder="External Port" />
         <input type="text" id="targetIp" placeholder="Target IP" />
@@ -50,7 +54,17 @@
     </div>
 
     <script>
-        const API_SECRET = 'your_api_secret_here';  // Replace with your actual API secret
+        let API_SECRET = '';  // Store the API secret here
+
+        function setApiSecret() {
+            const apiSecretInput = document.getElementById('apiSecret').value;
+            if (apiSecretInput) {
+                API_SECRET = apiSecretInput;
+                alert('API Secret set successfully!');
+            } else {
+                alert('Please enter a valid API Secret.');
+            }
+        }
 
         async function addPortForward() {
             const externalPort = document.getElementById('externalPort').value;
