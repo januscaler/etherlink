@@ -72,12 +72,20 @@ app.get('/api/port-forward', authenticate, async (req, res) => {
 
 // Helper function to parse iptables output
 function parseIptablesOutput(output) {
-  const lines = output.split('\n');
+  const lines = output.trim().split('\n');
   const rules = [];
+  
+  // Skip the first two lines which are headers
+  for (let i = 2; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line === '') continue; // Skip empty lines
 
-  lines.forEach(line => {
-    const columns = line.trim().split(/\s+/);
-    if (columns.length > 0) {
+    const columns = line.split(/\s+/); // Split by whitespace
+
+    // Assuming the structure is consistent and the columns are:
+    // 0: target, 1: protocol, 2: in-interface, 3: out-interface,
+    // 4: source, 5: destination, 6: options
+    if (columns.length >= 6) { // Ensure there are enough columns
       const rule = {
         target: columns[0],
         protocol: columns[1],
@@ -85,15 +93,14 @@ function parseIptablesOutput(output) {
         out: columns[3],
         source: columns[4],
         destination: columns[5],
-        options: columns.slice(6).join(' '),
+        options: columns.slice(6).join(' '), // Join any remaining columns as options
       };
       rules.push(rule);
     }
-  });
+  }
 
   return rules;
 }
-
 
 // Route to delete a specific port forwarding rule
 app.delete('/api/port-forward', authenticate, async (req, res) => {
