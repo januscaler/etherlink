@@ -11,6 +11,7 @@ const API_SECRET = process.env.API_SECRET;
 
 // Middleware for parsing JSON
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 // Middleware for API secret verification
 function authenticate(req, res, next) {
