@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Forwarding Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Port Forwarding Manager</h1>
+
+        <h2>Add Port Forwarding Rule</h2>
+        <input type="text" id="externalPort" placeholder="External Port" />
+        <input type="text" id="targetIp" placeholder="Target IP" />
+        <input type="text" id="targetPort" placeholder="Target Port" />
+        <button onclick="addPortForward()">Add Rule</button>
+
+        <h2>Delete Port Forwarding Rule</h2>
+        <input type="text" id="delExternalPort" placeholder="External Port" />
+        <input type="text" id="delTargetIp" placeholder="Target IP" />
+        <input type="text" id="delTargetPort" placeholder="Target Port" />
+        <button onclick="deletePortForward()">Delete Rule</button>
+
+        <h2>List Port Forwarding Rules</h2>
+        <button onclick="listPortForwards()">List Rules</button>
+        <pre id="rulesOutput"></pre>
+    </div>
+
+    <script>
+        const API_SECRET = 'your_api_secret_here';  // Replace with your actual API secret
+
+        async function addPortForward() {
+            const externalPort = document.getElementById('externalPort').value;
+            const targetIp = document.getElementById('targetIp').value;
+            const targetPort = document.getElementById('targetPort').value;
+
+            const response = await fetch('/api/port-forward', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-secret': API_SECRET
+                },
+                body: JSON.stringify({ externalPort, targetIp, targetPort })
+            });
+
+            const data = await response.json();
+            alert(data.message || data.error);
+        }
+
+        async function deletePortForward() {
+            const externalPort = document.getElementById('delExternalPort').value;
+            const targetIp = document.getElementById('delTargetIp').value;
+            const targetPort = document.getElementById('delTargetPort').value;
+
+            const response = await fetch('/api/port-forward', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-secret': API_SECRET
+                },
+                body: JSON.stringify({ externalPort, targetIp, targetPort })
+            });
+
+            const data = await response.json();
+            alert(data.message || data.error);
+        }
+
+        async function listPortForwards() {
+            const response = await fetch('/api/port-forward', {
+                method: 'GET',
+                headers: {
+                    'api-secret': API_SECRET
+                }
+            });
+
+            const data = await response.json();
+            document.getElementById('rulesOutput').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
