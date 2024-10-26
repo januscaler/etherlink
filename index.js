@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT||3000;
 
 // Load API secret from environment variables
 const API_SECRET = process.env.API_SECRET;
