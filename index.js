@@ -61,11 +61,39 @@ app.get('/api/port-forward', authenticate, async (req, res) => {
     const listCommand = `iptables -t nat -L PREROUTING -n -v`;
     const output = await executeCommand(listCommand);
 
-    res.json({ message: 'NAT port forwarding rules:', rules: output });
+    // Parse the output to JSON format
+    const rules = parseIptablesOutput(output);
+
+    res.json({ message: 'NAT port forwarding rules:', rules });
   } catch (err) {
     res.status(500).json({ error: 'Failed to retrieve port forwarding rules', details: err });
   }
 });
+
+// Helper function to parse iptables output
+function parseIptablesOutput(output) {
+  const lines = output.split('\n');
+  const rules = [];
+
+  lines.forEach(line => {
+    const columns = line.trim().split(/\s+/);
+    if (columns.length > 0) {
+      const rule = {
+        target: columns[0],
+        protocol: columns[1],
+        in: columns[2],
+        out: columns[3],
+        source: columns[4],
+        destination: columns[5],
+        options: columns.slice(6).join(' '),
+      };
+      rules.push(rule);
+    }
+  });
+
+  return rules;
+}
+
 
 // Route to delete a specific port forwarding rule
 app.delete('/api/port-forward', authenticate, async (req, res) => {
@@ -96,6 +124,6 @@ app.delete('/api/port-forward', authenticate, async (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT,"0.0.0.0", () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
