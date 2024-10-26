@@ -1,0 +1,17 @@
+{
+	"name": "@januscaler/etherlink",
+	"version": "1.0.0",
+	"publishConfig": {
+		"@januscaler:registry": "https://npm.pkg.github.com"
+	},
+	"scripts": {
+	"start":"node index.js"
+	},
+	"author": "januscaler",
+	"license": "MIT",
+	"dependencies": {
+		},
+	"devDependencies": {
+		
+	}
+}
